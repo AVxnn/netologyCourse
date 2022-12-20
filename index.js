@@ -38,28 +38,33 @@ const current = () => {
     } else {
         result = new Date()
     }
+    console.log(result)
 }
 const sub = (item) => {
-    if (argv.y || argv.year) {
+    if (argv.y || argv.year && item) {
         result = new Date().getUTCFullYear() - item
-    } else if (argv.m || argv.month) {
+    } else if (argv.m || argv.month && item) {
         result = new Date().getUTCMonth() - item
-    } else if (argv.d || argv.date) {
+    } else if (argv.d || argv.date && item) {
         result = new Date().getUTCDate() - item
     } else {
-        result = new Date()
+        console.log('Вы можете добавить в конце команды цифру, чтобы попасть в прошлое')
+        return null
     }
+    console.log(result)
 }
 const add = (item) => {
-    if (argv.y || argv.year) {
+    if (argv.y || argv.year && item) {
         result = new Date().getUTCFullYear() + item
-    } else if (argv.m || argv.month) {
+    } else if (argv.m || argv.month && item) {
         result = new Date().getUTCMonth() + item
-    } else if (argv.d || argv.date) {
+    } else if (argv.d || argv.date && item) {
         result = new Date().getUTCDate() + item
     } else {
-        result = new Date()
+        console.log('Вы можете добавить в конце команды цифру, чтобы попасть в будущее')
+        return null
     }
+    console.log(result)
 }
 
 if (argv.$0 == 'current') {
@@ -69,5 +74,3 @@ if (argv.$0 == 'current') {
 } else if (argv.$0 == 'add') {
     add(argv._[0])
 }
-
-console.log(result)
