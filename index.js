@@ -28,13 +28,46 @@ const argv = yargs(hideBin(process.argv))
 
 let result = null
 
-if (argv.y || argv.year) {
-    result = new Date().getUTCFullYear()
-} else if (argv.m || argv.month) {
-    result = new Date().getUTCMonth()
-} else if (argv.d || argv.date) {
-    result = new Date().getUTCDate()
-} else {
-    result = new Date()
+const current = () => {
+    if (argv.y || argv.year) {
+        result = new Date().getUTCFullYear()
+    } else if (argv.m || argv.month) {
+        result = new Date().getUTCMonth()
+    } else if (argv.d || argv.date) {
+        result = new Date().getUTCDate()
+    } else {
+        result = new Date()
+    }
 }
+const sub = (item) => {
+    if (argv.y || argv.year) {
+        result = new Date().getUTCFullYear() - item
+    } else if (argv.m || argv.month) {
+        result = new Date().getUTCMonth() - item
+    } else if (argv.d || argv.date) {
+        result = new Date().getUTCDate() - item
+    } else {
+        result = new Date()
+    }
+}
+const add = (item) => {
+    if (argv.y || argv.year) {
+        result = new Date().getUTCFullYear() + item
+    } else if (argv.m || argv.month) {
+        result = new Date().getUTCMonth() + item
+    } else if (argv.d || argv.date) {
+        result = new Date().getUTCDate() + item
+    } else {
+        result = new Date()
+    }
+}
+
+if (argv.$0 == 'current') {
+    current()
+} else if (argv.$0 == 'sub') {
+    sub(argv._[0])
+} else if (argv.$0 == 'add') {
+    add(argv._[0])
+}
+
 console.log(result)

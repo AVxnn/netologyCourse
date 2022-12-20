@@ -5,8 +5,8 @@
   "main": "date.js",
   "bin": {
     "current": "./index.js",
-    "sub": "./sub.js",
-    "add": "./add.js"
+    "sub": "./index.js",
+    "add": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
