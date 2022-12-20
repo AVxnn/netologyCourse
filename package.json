@@ -4,7 +4,7 @@
   "description": "",
   "main": "date.js",
   "bin": {
-    "simple-date": "./date.js"
+    "game": "./game.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -12,6 +12,5 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "yargs": "^17.6.2"
   }
 }
