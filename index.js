@@ -67,10 +67,10 @@ const add = (item) => {
     console.log(result)
 }
 
-if (argv.$0 == 'current') {
+if (argv._[0] == 'current') {
     current()
-} else if (argv.$0 == 'sub') {
-    sub(argv._[0])
-} else if (argv.$0 == 'add') {
-    add(argv._[0])
+} else if (argv._[0] == 'sub') {
+    sub(argv._[1])
+} else if (argv._[0] == 'add') {
+    add(argv._[1])
 }
