@@ -29,11 +29,11 @@ const argv = yargs(hideBin(process.argv))
 let result = null
 
 if (argv.y || argv.year) {
-    result = new Date().getUTCFullYear()
+    result = new Date().getUTCFullYear() + argv._[0]
 } else if (argv.m || argv.month) {
-    result = new Date().getUTCMonth()
+    result = new Date().getUTCMonth() + argv._[0]
 } else if (argv.d || argv.date) {
-    result = new Date().getUTCDate()
+    result = new Date().getUTCDate() + argv._[0]
 } else {
     result = new Date()
 }
