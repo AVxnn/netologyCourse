@@ -1,0 +1,1 @@
+{"logs":[{"number":0,"player":"1","game":2,"result":"lost"},{"number":1,"player":"1","game":2,"result":"lost"},{"number":2,"player":"2","game":1,"result":"lost"},{"number":3,"player":"1","game":2,"result":"lost"},{"number":4,"player":"2","game":1,"result":"lost"},{"number":5,"player":"2","game":2,"result":"won"}]}
