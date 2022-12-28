@@ -1,17 +1,23 @@
 {
-  "name": "first",
+  "name": "nemvxnns",
   "version": "1.0.0",
-  "description": "",
-  "main": "date.js",
-  "bin": {
-    "cmd": "./index.js"
-  },
+  "description": "qwd",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node -r dotenv/config api.js"
   },
-  "author": "",
+  "author": "metavxnn",
   "license": "ISC",
+  "bin": {
+    "api": "node -r dotenv/config api.js"
+  },
   "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "uuid": "^9.0.0",
     "yargs": "^17.6.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
