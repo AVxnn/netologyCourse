@@ -29,10 +29,12 @@ router.put('/:id', uploadImg.single('fileBook'), (req, res) => {
       fileBook
     }
 
-    res.json(books[idx])
+    res.json(`Книга изменена`)
   } else {
+    const example = books.map((i, index) => index < 2 ? i.id : '')
     res.status(404)
-    res.json('404 | страница не найдена')
+    res.json(
+      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
   }
 })
 

@@ -9,8 +9,10 @@ router.delete('/:id', (req, res) => {
   if (idx !== -1) {
     books.splice(idx, 1)
   } else {
+    const example = books.map((i, index) => index < 2 ? i.id : '')
     res.status(404)
-    res.json('404 | страница не найдена')
+    res.json(
+      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
   }
 
 })

@@ -17,11 +17,14 @@ router.get('/:id/download', (req, res) => {
       });
       res.status(201)
     } else {
+      res.status(404)
       res.json('В выбранной книге нет изображения')
     }
   } else {
+    const example = books.map((i, index) => index < 2 ? i.id : '')
     res.status(404)
-    res.json('404 | страница не найдена')
+    res.json(
+      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
   }
 })
 

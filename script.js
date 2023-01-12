@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config();
 const store = require('./store')
 const loginRouter = require('./routes/login')
 const error = require('./middleware/error')

@@ -31,7 +31,6 @@ router.post('/', uploadImg.single('fileBook') ,(req, res) => {
     fileBook = '';
   if (req.file) {
     fileBook = req.file.filename;
-    console.log(req.file)
     fileCover = req.file.originalname.split('.')[0]
     fileName = `${Date.now()}-${req.file.originalname.split('.')[0]}`;
   }
