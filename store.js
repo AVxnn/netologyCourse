@@ -9,7 +9,7 @@ const store = {
       title: "Торадора!",
       description: "とらドラ",
       authors: "\tЮюко Такэмия",
-      favorite: "vxnn",
+      favorite: "favorite",
       fileCover: "awdasdas",
       fileName: "1673476184043-awdasdas",
       fileBook: '1673476184043-awdasdas.png'

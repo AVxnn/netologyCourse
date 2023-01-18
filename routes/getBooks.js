@@ -4,7 +4,10 @@ const router = express.Router()
 
 router.get('/', (req, res) => {
   const {books} = store
-  res.json(books)
+  res.render("lib/index", {
+    title: "Books",
+    todos: books,
+  });
 })
 
 module.exports = router

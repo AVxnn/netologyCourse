@@ -1,0 +1,33 @@
+<%- include('../port/layout-start', {title: title}) %>
+<%- include('../port/menu') %>
+
+<h1><%= title %></h1>
+
+<div class="row">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-body">
+
+                <h5 class="card-title"><%= todo.title %></h5>
+                <p class="card-text"><%= todo.description %></p>
+                <p class="card-text"><%= todo.authors %></p>
+                <p class="card-text"><%= todo.favorite %></p>
+                <img src="<%= todo.co %>" alt="">
+
+                <div class="text-right">
+                    <a class="btn btn-sm btn-primary" href="/api/books/update/<%= todo.id %>">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                    <form action="/api/books/delete/<%= todo.id %>" method="POST" class="d-inline">
+                        <button class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../port/layout-end') %>

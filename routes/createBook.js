@@ -24,6 +24,13 @@ class Book {
   }
 }
 
+router.get('/', uploadImg.single('fileBook'), (req, res) => {
+  res.render("lib/create", {
+    title: "ToDo | create",
+    todo: {},
+  });
+})
+
 router.post('/', uploadImg.single('fileBook') ,(req, res) => {
   const {books} = store
   let fileCover = '',
