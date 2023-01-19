@@ -7,12 +7,11 @@
     <div class="col-sm-8">
         <div class="card">
             <div class="card-body">
-
-                <h5 class="card-title"><%= todo.title %></h5>
-                <p class="card-text"><%= todo.description %></p>
-                <p class="card-text"><%= todo.authors %></p>
-                <p class="card-text"><%= todo.favorite %></p>
-                <img src="<%= todo.co %>" alt="">
+                <h5 class="card-title">Заголовок: <%= todo.title %></h5>
+                <p class="card-text">Описание: <%= todo.description %></p>
+                <p class="card-text">Авторы: <%= todo.authors %></p>
+                <p class="card-text">Любимое: <%= todo.favorite %></p>
+                <img src="`./../public/img/<%= todo.fileBook %>" alt="">
 
                 <div class="text-right">
                     <a class="btn btn-sm btn-primary" href="/api/books/update/<%= todo.id %>">
