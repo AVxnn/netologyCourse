@@ -61,6 +61,8 @@ router.get('/book/create', uploadImg.single('fileBook'), (req, res) => {
 
 router.post('/book/create', uploadImg.single('fileBook') ,(req, res) => {
   const {books} = store
+  const {title, description, authors, favorite} = req.body
+  
   let fileCover = '',
     fileName = '',
     fileBook = '';
@@ -69,7 +71,6 @@ router.post('/book/create', uploadImg.single('fileBook') ,(req, res) => {
     fileCover = req.file.originalname.split('.')[0]
     fileName = `${Date.now()}-${req.file.originalname.split('.')[0]}`;
   }
-  const {title, description, authors, favorite} = req.body
   const newBook = new Book(title, description, authors, favorite, fileCover, fileName, fileBook)
   books.push(newBook)
   res.status(201)
