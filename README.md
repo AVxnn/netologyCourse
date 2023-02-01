@@ -171,8 +171,58 @@ docker.io/library/node:15.14
 
 docker run --name first_node -d -t -v ~/data:/var/first/data node:15.14
 
-d694418ccf36c285de3635c1cb7b07ae41b69cbad7413c94231ead9d2d52f957
+1bb7012a1f3ea7b190f0496571e4271980cf5a1376efdf2322ed030e5a199fad
 
 docker run --name second_node -d -t -v ~/data:/var/second/data node:15.14
 
-a813eaa1174f7714852ee4043e517c2274026e98e7548c57eb8b093c5b75fa0e
+357bff3e422d38e5b11f506f9b3b018e883debb4241182740d886d54017681cf
+
+docker exec -it first_node bash
+
+root@1bb7012a1f3e:/#
+
+echo content1 > var/first/data/first_content.txt
+
+root@1bb7012a1f3e:/#
+
+echo host_content > var/first/data/host_content.txt
+
+root@1bb7012a1f3e:/#
+
+netologyCourse % docker exec -it second_node bash
+
+root@357bff3e422d:/# 
+
+ls /var/second/data
+
+first_content.txt host_content.txt
+
+cat /var/second/data/*
+
+content1
+host_content
+
+docker stop first_node second_node
+
+first_node
+second_node
+
+docker rm first_node second_node
+
+first_node
+second_node
+
+docker rmi node:15.14
+
+Untagged: node:15.14
+Untagged: node@sha256:608bba799613b1ebf754034ae008849ba51e88b23271412427b76d60ae0d0627
+Deleted: sha256:3d3f41722daf1a77c34d6eade6676bbffa2d6a2a21095de2ab0c427a5c942fc9
+Deleted: sha256:601382991a159cfc5013ad973158f30b7b7a913e8d7e547b3456deab3ad98022
+Deleted: sha256:d5db49eecae8c02c9ea3a79f89c43ded9162bac118a0302a7b514d0df82aa112
+Deleted: sha256:a2c1973858d0aad3de0927294602b17c8ef9050c30e0f461e0868997a08552a4
+Deleted: sha256:a0153172017a08a521a8be971ca4dcb5fbc4b7227642c12bbb2da6265bd66b50
+Deleted: sha256:f1123940e954d335d91b52a40fab4f8144f38ff113ade7d65663071d0f06da6f
+Deleted: sha256:f1f4fbb0e7e6e0ce2d9eae1e577f9f6df0a719dd874bff00b2d08895c75c297d
+Deleted: sha256:1eb455ab6d45fdbbd90fccff791ffa228080c052acf464f8da1b1d78650bd706
+Deleted: sha256:1dbe832a694971a925d7d216f49b700c95f402bd72288f9d37eceb1d59dcf72d
+Deleted: sha256:2f4ee6a2e1b5dfb9236cd262e788f9d39109242ca27a4aacb583c8af66ec3ff7
