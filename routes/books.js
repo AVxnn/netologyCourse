@@ -1,8 +1,17 @@
 const store = require("../store");
-const express = require('express')
+const express = require('express');
 const {v4: uuid} = require("uuid");
 const uploadImg = require("../middleware/uploadImg");
 const router = express.Router()
+const redis = require('redis');
+
+const REDIS_URL = process.env.REDIS_URL || 'redis://localhost'
+
+const client = redis.createClient({url: REDIS_URL});
+
+(async () => {
+  await client.connect()
+})();
 
 
 class Book {
@@ -26,15 +35,61 @@ class Book {
 }
 
 
-router.get('/books/:id', (req, res) => {
+router.get('/books/:id', async (req, res) => {
   const {books} = store
   const {id} = req.params
   const idx = books.findIndex(el => el.id === id)
   if (idx !== -1) {
-    res.render("lib/view", {
-      title: "ToDo | view",
-      todo: books[idx],
-    });
+    try {
+      const cnt = await client.incr(id)
+      res.render("lib/view", {
+        title: "ToDo | view",
+        todo: {...books[idx], views: cnt},
+      });
+    } catch (error) {
+      console.log('Ошибка redis', error);
+      res.json({errcode: 500, errmsg: 'redis error!'})
+    }
+  } else {
+    const example = books.map((i, index) => index < 2 ? i.id : '')
+    res.status(404)
+    res.json(
+      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
+  }
+})
+
+router.post('/counter/:id/incr', async (req, res) => {
+  const {books} = store
+  const {id} = req.params
+  const idx = books.findIndex(el => el.id === id)
+  if (idx !== -1) {
+    try {
+      const cnt = await client.incr(id)
+      req.json({message: `Значение книги ${id}, увеличено на 1`})
+    } catch (error) {
+      console.log('Ошибка redis', error);
+      res.json({errcode: 500, errmsg: 'redis error!'})
+    }
+  } else {
+    const example = books.map((i, index) => index < 2 ? i.id : '')
+    res.status(404)
+    res.json(
+      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
+  }
+})
+
+router.get('/counter/:id', async (req, res) => {
+  const {books} = store
+  const {id} = req.params
+  const idx = books.findIndex(el => el.id === id)
+  if (idx !== -1) {
+    try {
+      const cnt = await client.get(id)
+      res.json({message: `Значение книги ${id} - ${cnt}`})
+    } catch (error) {
+      console.log('Ошибка redis', error);
+      res.json({errcode: 500, errmsg: 'redis error!'})
+    }
   } else {
     const example = books.map((i, index) => index < 2 ? i.id : '')
     res.status(404)

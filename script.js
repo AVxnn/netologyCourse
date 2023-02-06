@@ -6,12 +6,16 @@ const error = require('./middleware/error')
 const books = require('./routes/books')
 const logger = require('./middleware/logger')
 
-const app = express()
+const req = require('express/lib/request');
 
-app.use(logger)
-console.log('hello')
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+const PORT = process.env.PORT || 3000;
+
+const app = express();
+
+app.use(logger);
+console.log('hello');
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 
 app.get('/', (req, res) => {
@@ -24,7 +28,5 @@ app.use('/api/user/login', loginRouter)
 app.use('/api', books)
 
 app.use(error)
-
-const PORT = process.env.PORT || 3000;
 
 app.listen(PORT)
