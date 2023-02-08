@@ -3,108 +3,63 @@ const express = require('express');
 const {v4: uuid} = require("uuid");
 const uploadImg = require("../middleware/uploadImg");
 const router = express.Router()
-const redis = require('redis');
 
-const REDIS_URL = process.env.REDIS_URL || 'redis://localhost'
-
-const client = redis.createClient({url: REDIS_URL});
-
-(async () => {
-  await client.connect()
-})();
-
-
-class Book {
-  constructor(title = '',
-              description = '',
-              authors = '',
-              favorite = '',
-              fileCover = '',
-              fileName = '',
-              fileBook = '',
-              id = uuid()) {
-    this.title = title
-    this.description = description
-    this.authors = authors
-    this.favorite = favorite
-    this.fileCover = fileCover
-    this.fileName = fileName
-    this.fileBook = fileBook
-    this.id = id
-  }
-}
-
+const BookM = require('../models/book');
+const logger = require("../middleware/logger");
 
 router.get('/books/:id', async (req, res) => {
-  const {books} = store
   const {id} = req.params
-  const idx = books.findIndex(el => el.id === id)
-  if (idx !== -1) {
-    try {
-      const cnt = await client.incr(id)
-      res.render("lib/view", {
-        title: "ToDo | view",
-        todo: {...books[idx], views: cnt},
-      });
-    } catch (error) {
-      console.log('Ошибка redis', error);
-      res.json({errcode: 500, errmsg: 'redis error!'})
-    }
-  } else {
-    const example = books.map((i, index) => index < 2 ? i.id : '')
+  try {
+    const book = await BookM.findById(id).select('-__v')
+    console.log(book)
+    const viewsUpdate = await BookM.findByIdAndUpdate(id, {
+      views: +book.views + 1
+    }).select('-__v')
+
+    res.render("lib/view", {
+      title: "ToDo | view",
+      todo: book,
+    });
+  } catch (error) {
     res.status(404)
-    res.json(
-      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
+    res.json(`Такой идентификатор не найден, попробуйте другой.`)
   }
 })
 
 router.post('/counter/:id/incr', async (req, res) => {
-  const {books} = store
   const {id} = req.params
-  const idx = books.findIndex(el => el.id === id)
-  if (idx !== -1) {
-    try {
-      const cnt = await client.incr(id)
-      req.json({message: `Значение книги ${id}, увеличено на 1`})
-    } catch (error) {
-      console.log('Ошибка redis', error);
-      res.json({errcode: 500, errmsg: 'redis error!'})
-    }
-  } else {
-    const example = books.map((i, index) => index < 2 ? i.id : '')
-    res.status(404)
-    res.json(
-      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
+  try {
+    const book = await BookM.findById(id).select('-__v')
+    const viewsUpdate = await BookM.findByIdAndUpdate(id, {
+      views: +book.views + 1
+    }).select('-__v')
+    req.json(`Значение книги ${id}, увеличено на 1`)
+  } catch (error) {
+    res.status(500).json(error)
   }
 })
 
 router.get('/counter/:id', async (req, res) => {
-  const {books} = store
   const {id} = req.params
-  const idx = books.findIndex(el => el.id === id)
-  if (idx !== -1) {
-    try {
-      const cnt = await client.get(id)
-      res.json({message: `Значение книги ${id} - ${cnt}`})
-    } catch (error) {
-      console.log('Ошибка redis', error);
-      res.json({errcode: 500, errmsg: 'redis error!'})
-    }
-  } else {
-    const example = books.map((i, index) => index < 2 ? i.id : '')
-    res.status(404)
-    res.json(
-      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
+  try {
+    const book = await BookM.findById(id).select('-__v')
+    res.json({message: `Значение книги ${id} - ${book.views}`})
+  } catch (error) {
+    res.status(500).json(error)
   }
 })
 
 
-router.get('/books', (req, res) => {
-  const {books} = store
-  res.render("lib/index", {
-    title: "Books",
-    todos: books,
-  });
+router.get('/books', async (req, res) => {
+  try {
+    const books = await BookM.find().select('-__v')
+    res.render("lib/index", {
+      title: "Books",
+      todos: books,
+    });
+  } catch (error) {
+    res.status(500).json(error)
+  }
 })
 
 router.get('/book/create', uploadImg.single('fileBook'), (req, res) => {
@@ -114,10 +69,9 @@ router.get('/book/create', uploadImg.single('fileBook'), (req, res) => {
   });
 })
 
-router.post('/book/create', uploadImg.single('fileBook') ,(req, res) => {
-  const {books} = store
+router.post('/book/create', async (req, res) => {
   const {title, description, authors, favorite} = req.body
-  
+
   let fileCover = '',
     fileName = '',
     fileBook = '';
@@ -126,9 +80,24 @@ router.post('/book/create', uploadImg.single('fileBook') ,(req, res) => {
     fileCover = req.file.originalname.split('.')[0]
     fileName = `${Date.now()}-${req.file.originalname.split('.')[0]}`;
   }
-  const newBook = new Book(title, description, authors, favorite, fileCover, fileName, fileBook)
-  books.push(newBook)
-  res.status(201)
+
+  try {
+    const book = new BookM({
+      title: title,
+      description: description,
+      authors: authors,
+      favorite: favorite,
+      fileCover: fileCover,
+      fileName: fileName,
+      views: 0
+    })
+
+    await book.save();
+    res.status(201)
+    res.redirect('/api/books')
+  } catch (error) {
+    res.status(500).json(error)
+  }
 })
 
 
@@ -158,71 +127,47 @@ router.get('/books/:id/download', (req, res) => {
   }
 })
 
-router.post('/books/delete/:id', (req, res) => {
-  const store = require("../store");
-  const {books} = store
+router.post('/books/delete/:id', async (req, res) => {
   const {id} = req.params
-  const idx = books.findIndex(el => el.id === id)
-  if (idx !== -1) {
-    books.splice(idx, 1)
-  } else {
-    const example = books.map((i, index) => index < 2 ? i.id : '')
+  const books = await BookM.deleteOne({_id: id})
+  res.render("errors/404", {
+    title: "OK - Book Deleted",
+  });
+})
+
+router.get('/books/update/:id', async (req, res) => {
+  const {id} = req.params
+  try {
+    const book = await BookM.findById(id).select('-__v')
+    res.render("lib/update", {
+      title: "ToDo | view",
+      todo: book,
+    });
+  } catch (error) {
     res.status(404)
-    res.json(
-      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
+    res.json(`Такой идентификатор не найден, попробуйте другой.`)
   }
-})
-
-router.get('/books/delete/:id', uploadImg.single('fileBook'), (req, res) => {
-  const {books} = store
-  res.render("lib/index", {
-    title: "Books",
-    todos: books,
-  });
-})
-
-router.get('/books/update/:id', (req, res) => {
-  const {books} = store
-  const {id} = req.params
-  const idx = books.findIndex(el => el.id === id)
-  res.render("lib/update", {
-    title: "ToDo | view",
-    todo: books[idx],
-  });
 });
 
-router.post('/books/update/:id', uploadImg.single('fileBook'), (req, res) => {
-  const {books} = store
+router.post('/books/update/:id', uploadImg.single('fileBook'), async (req, res) => {
   const {title = '', description = '', authors = '', favorite = ''} = req.body
   const {id} = req.params
-  const idx = books.findIndex(el => el.id === id)
+
   let fileCover = '',
     fileName = '',
     fileBook = '';
   if (req.file) {
     fileBook = req.file.filename;
-    console.log(fileBook);
     fileCover = req.file.originalname.split('.')[0]
     fileName = `${Date.now()}-${req.file.originalname.split('.')[0]}`;
   }
-  if (idx !== -1){
-    books[idx] = {
-      ...books[idx],
-      title,
-      description,
-      authors,
-      favorite,
-      fileCover,
-      fileName,
-      fileBook
-    }
-
-  } else {
-    const example = books.map((i, index) => index < 2 ? i.id : '')
-    res.status(404)
-    res.json(
-      `Такой идентификатор не найден, попробуйте другой. Вот пару рабочих id ${example}`)
-  }
+  const books = await BookM.findByIdAndUpdate({_id: id}, {
+    title: title,
+    description: description,
+    authors: authors,
+    favorite: favorite
+  })
+  res.redirect('/api/books')
 })
 
 

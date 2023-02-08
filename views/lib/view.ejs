@@ -15,10 +15,10 @@
                 <img src="`./../public/img/<%= todo.fileBook %>" alt="">
 
                 <div class="text-right">
-                    <a class="btn btn-sm btn-primary" href="/api/books/update/<%= todo.id %>">
+                    <a class="btn btn-sm btn-primary" href="/api/books/update/<%= todo._id %>">
                         <i class="fa fa-pencil" aria-hidden="true"></i>
                     </a>
-                    <form action="/api/books/delete/<%= todo.id %>" method="POST" class="d-inline">
+                    <form action="/api/books/delete/<%= todo._id %>" method="POST" class="d-inline">
                         <button class="btn btn-sm btn-danger">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                         </button>
