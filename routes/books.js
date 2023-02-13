@@ -1,4 +1,3 @@
-const store = require("../store");
 const express = require('express');
 const {v4: uuid} = require("uuid");
 const uploadImg = require("../middleware/uploadImg");
@@ -7,15 +6,25 @@ const router = express.Router()
 const BookM = require('../models/book');
 const logger = require("../middleware/logger");
 
+const redis = require('redis');
+
+const REDIS_URL = process.env.REDIS_URL || 'redis://localhost'
+
+const client = redis.createClient({url: REDIS_URL});
+
+(async () => {
+  await client.connect()
+})();
+
 router.get('/books/:id', async (req, res) => {
   const {id} = req.params
   try {
     const book = await BookM.findById(id).select('-__v')
-    console.log(book)
+    const cnt = await client.incr(id)
     const viewsUpdate = await BookM.findByIdAndUpdate(id, {
       views: +book.views + 1
     }).select('-__v')
-
+    console.log(book, book.views = cnt, cnt);
     res.render("lib/view", {
       title: "ToDo | view",
       todo: book,
@@ -30,9 +39,10 @@ router.post('/counter/:id/incr', async (req, res) => {
   const {id} = req.params
   try {
     const book = await BookM.findById(id).select('-__v')
-    const viewsUpdate = await BookM.findByIdAndUpdate(id, {
-      views: +book.views + 1
-    }).select('-__v')
+    const cnt = await client.incr(id)
+    // const viewsUpdate = await BookM.findByIdAndUpdate(id, {
+    //   views: +book.views + 1
+    // }).select('-__v')
     req.json(`Значение книги ${id}, увеличено на 1`)
   } catch (error) {
     res.status(500).json(error)
@@ -43,7 +53,8 @@ router.get('/counter/:id', async (req, res) => {
   const {id} = req.params
   try {
     const book = await BookM.findById(id).select('-__v')
-    res.json({message: `Значение книги ${id} - ${book.views}`})
+    const cnt = await client.get(id)
+    res.json({message: `Значение книги ${id} - ${cnt}`})
   } catch (error) {
     res.status(500).json(error)
   }
@@ -89,7 +100,7 @@ router.post('/book/create', async (req, res) => {
       favorite: favorite,
       fileCover: fileCover,
       fileName: fileName,
-      views: 0
+      viewsM: 0
     })
 
     await book.save();
