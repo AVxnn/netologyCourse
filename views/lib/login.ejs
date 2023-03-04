@@ -1,0 +1,26 @@
+<%- include('../port/layout-start', {title: title}) %>
+<%- include('../port/menu', { user: user }) %>
+
+<h1><%= title %></h1>
+
+<div class="row">
+    <div class="col-sm-8">
+        <div class="card">
+            <form action="/api/user/login" method="post">
+                <div>
+                    <label>Логин:</label>
+                    <input type="text" name="username" /><br />
+                </div>
+                <div>
+                    <label>Пароль:</label>
+                    <input type="password" name="password" />
+                </div>
+                <div>
+                    <input type="submit" value="Войти" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include('../port/layout-end') %>

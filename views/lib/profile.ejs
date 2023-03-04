@@ -1,0 +1,27 @@
+<%- include('../port/layout-start', {title: title}) %>
+<%- include('../port/menu', { user: user }) %>
+
+<h1><%= title %></h1>
+
+<div class="row">
+    <div class="col-sm-8">
+        <div class="card">
+            <p>
+                <b>ID:</b>         <%= user.id %><br />
+                <b>Username:</b>   <%= user.username %><br />
+                <b>Name:</b>       <%= user.displayName %><br />
+                <% if (user.emails) { %>
+                    <b>Email:</b>  <%= user.emails[0].value %><br />
+                <% } %>
+            </p>
+            <form action="/api/user/logout" method="post">
+                <div>
+                    <input type="submit" value="Выйти" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<%- include('../port/layout-end') %>

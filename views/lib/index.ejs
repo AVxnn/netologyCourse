@@ -1,9 +1,16 @@
 <%- include('../port/layout-start', {title: title}) %>
-<%- include('../port/menu') %>
+<%- include('../port/menu', { user: user }) %>
 
 
 <h1><%= title %></h1>
 <a class="btn btn-sm btn-primary" href="/api/book/create">Добавить запись</a>
+
+<% if (!user) { %>
+    <p>Пожалуйста, <a href="/api/user/login"> авторизуйтесь </a></p>
+<% } else { %>
+    <p>Привет, <%= user.username %>. </p>
+    <p>Перейти в <a href="/api/user/profile">профиль</a>.</p>
+<% } %>
 
 <% if(todos.length) { %>
     <table class="table table-striped table-sm  mt-3">
@@ -16,7 +23,7 @@
         </thead>
         <tbody>
 
-        <% todos.map((el, idx) => {  %>
+        <% todos?.map((el, idx) => {  %>
             <tr>
                 <th scope="row"><%= idx +1 %></th>
                 <td><%= el.title %></td>

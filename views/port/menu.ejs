@@ -17,6 +17,14 @@
             <li class="nav-item">
                 <a class="nav-link" href="/api/books">Books</a>
             </li>
+            <% if (!user) { %>
+                <li class="nav-item">
+                </li>
+            <% } else { %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/api/user/profile">Profile</a>
+                </li>
+            <% } %>
         </ul>
     </div>
 </nav>

@@ -28,6 +28,7 @@ router.get('/books/:id', async (req, res) => {
     res.render("lib/view", {
       title: "ToDo | view",
       todo: book,
+      user: req.user
     });
   } catch (error) {
     res.status(404)
@@ -67,6 +68,7 @@ router.get('/books', async (req, res) => {
     res.render("lib/index", {
       title: "Books",
       todos: books,
+      user: req.user
     });
   } catch (error) {
     res.status(500).json(error)
@@ -77,6 +79,7 @@ router.get('/book/create', uploadImg.single('fileBook'), (req, res) => {
   res.render("lib/create", {
     title: "ToDo | create",
     todo: {},
+    user: req.user
   });
 })
 
@@ -143,6 +146,7 @@ router.post('/books/delete/:id', async (req, res) => {
   const books = await BookM.deleteOne({_id: id})
   res.render("errors/404", {
     title: "OK - Book Deleted",
+    user: req.user
   });
 })
 
@@ -153,6 +157,7 @@ router.get('/books/update/:id', async (req, res) => {
     res.render("lib/update", {
       title: "ToDo | view",
       todo: book,
+      user: req.user
     });
   } catch (error) {
     res.status(404)
